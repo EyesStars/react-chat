@@ -11,11 +11,9 @@ module.exports.addMessage = async (req, res, next) => {
       sender: from
     });
     if (data) {
-      // return res.json({ msg: '消息添加成功' });
-      return;
+      return res.json({ msg: '消息添加成功', status: 200 });
     }
-    // return res.json({ msg: '消息添加失败' });
-    return;
+    return res.json({ msg: '消息添加失败', status: 201 });
   } catch (err) {
     next(err);
   }
@@ -25,7 +23,6 @@ module.exports.addMessage = async (req, res, next) => {
 module.exports.getAllMessage = async (req, res, next) => {
   try {
     const { from, to } = req.body;
-    // console.log('req.body ==> ', req.body);
     const messages = await messagesModel.find({
       users: {
         $all: [from, to]
@@ -35,11 +32,12 @@ module.exports.getAllMessage = async (req, res, next) => {
     const projectMessages = messages.map((msg) => {
       return {
         fromSelf: msg.sender.toString() === from,
-        message:msg.message.text
+        message: msg.message.text
       }
     })
-    res.json(projectMessages);
+    res.send(projectMessages);
   } catch (err) {
     next(err)
   }
 };
+

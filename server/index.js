@@ -43,10 +43,11 @@ const server = app.listen(CONFIG.SERVER_OPTIONS.POST, () => {
 
 const io = socket(server, {
   cors: {
-    origin: `${CONFIG.SERVER_OPTIONS.HOST}:${CONFIG.SERVER_OPTIONS.POST}`,
+    origin: "http://localhost:3000",
     credentials: true
   }
-})
+});
+
 global.onlineUsers = new Map();
 
 io.on("connection", (socket) => {
@@ -56,9 +57,11 @@ io.on("connection", (socket) => {
   })
 
   socket.on("send-msg", (data) => {
-    const sendUserSocket = onlineUsers.get(data.to)
+    // console.log('data ==> ', data);
+    const sendUserSocket = onlineUsers.get(data.to);
+    // console.log('sendUserSocket ==> ', sendUserSocket);
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("msg-recieve", data.msg)
+      socket.to(sendUserSocket).emit("msg-recieve", data.message)
     }
   })
 });
